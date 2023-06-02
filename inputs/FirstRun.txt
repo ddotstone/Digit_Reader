@@ -1,0 +1,4 @@
+mnist_train.csv
+50000
+mnist_test.csv
+10000
