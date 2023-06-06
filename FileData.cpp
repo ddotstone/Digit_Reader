@@ -24,7 +24,13 @@ FileData::FileData(std::string training_data, int training_samples, std::string 
         for (int i = 0;i < 785;i++) {
             std::string word;
             std::getline(s, word, ',');
-            (*this->training_data)(row,i) = stoi(word);
+            if (i == 0) {
+                (*this->training_data)(row,i) = stoi(word) / 1.0;
+            }
+            else {
+                (*this->training_data)(row,i) = stoi(word) / 255.0;
+
+            }
         }
     }
     printf("\n");
@@ -62,13 +68,24 @@ FileData::FileData(std::string training_data, int training_samples, std::string 
         for (int i = 0;i < 785;i++) {
             std::string word;
             std::getline(s, word, ',');
-            (*this->test_data)(row,i) = stoi(word);
+            if (i == 0) {
+                (*this->test_data)(row,i) = stoi(word) / 1.0;
+            }
+            else {
+                (*this->test_data)(row,i) = stoi(word) / 255.0;
+
+            }
         }
     }
 
     printf("\n");
     printf("Test Cases Complete\n\n");
     test_data_file.close();
+}
+
+FileData::~FileData() {
+    delete this->training_data;
+    delete this->test_data;
 }
 
 Eigen::MatrixXd* FileData::getTraining_Data() const {

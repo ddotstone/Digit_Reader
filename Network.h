@@ -19,16 +19,17 @@ private:
 public:
     //Constructors
     Network(std::vector<int> sizes);
+    ~Network();
 
     //Filter Through Inputs
     Eigen::VectorXd feedforward(Eigen::VectorXd inputs);
 
     //Training model
-    void SGD(Eigen::MatrixXd* training_data, int epochs, int mini_batch_size, double eta, Eigen::MatrixXd* test_data);
-    void update_mini_batch(Eigen::MatrixXd mini_batch, double eta);
-    std::pair<std::vector<Eigen::MatrixXd>,std::vector<Eigen::MatrixXd>> backdrop(Eigen::VectorXd x, Eigen::VectorXd y);
-    int evaluate(Eigen::MatrixXd* test_data);
-    Eigen::VectorXd cost_derivative(Eigen::VectorXd output_activations, Eigen::VectorXd x);
+    void SGD(Eigen::MatrixXd* training_data, int epochs, int mini_batch_size, double eta, const Eigen::MatrixXd* test_data);
+    void update_mini_batch(const Eigen::MatrixXd* training_data, int start, int end, double eta);
+    std::pair<std::vector<Eigen::MatrixXd>,std::vector<Eigen::MatrixXd>> backdrop(const Eigen::VectorXd& x, const Eigen::VectorXd& y);
+    int evaluate(const Eigen::MatrixXd* test_data);
+    Eigen::VectorXd cost_derivative(const Eigen::VectorXd& output_activations, const Eigen::VectorXd& x);
 };
 
 #endif

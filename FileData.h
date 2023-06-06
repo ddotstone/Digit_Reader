@@ -10,6 +10,7 @@ private:
 	Eigen::MatrixXd* test_data;
 public:
 	FileData(std::string training_data, int samples, std::string test_data, int test_samples);
+	~FileData();
 	
 	//Getters
 	Eigen::MatrixXd* getTraining_Data() const;
