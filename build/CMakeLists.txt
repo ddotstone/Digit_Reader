@@ -8,7 +8,7 @@ SET(EXECUTABLE_OUTPUT_PATH ../bin/)
 # list of the source files
 set(dataRead_files ../FileData.cpp)
 set(train_network_files ../Network.cpp)
-set(main_function ../main.cpp
+set(main_function ../main.cpp)
 # define the executable
 if(WIN32)
   add_executable(dataRead WIN32 ${dataRead_files})
