@@ -30,6 +30,6 @@ if(WIN32)
   endif(MSVC)
 endif(WIN32)
 
-target_include_directories(Digit_Reader PUBLIC ./eigen)
+target_include_directories(Digit_Reader PUBLIC "eigen")
 
 # install application
