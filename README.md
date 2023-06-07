@@ -17,4 +17,5 @@ When cloning the repository it is important that you clone it recursively using 
 In order to build the project, cmake is required. Navigate to the folder conataining the project and run "cmake build".
 
 **Running Project**
+
 The first thing the program will ask is what inputs to use. Theses can be found in the inputs folder. Enter the filename of the inputs you would like to use from the inputs folder and the program will begin to run.
