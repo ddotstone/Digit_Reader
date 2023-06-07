@@ -10,7 +10,7 @@
 class Network {
 private:
     //Network Sizes
-    int num_layers;
+    size_t num_layers;
     std::vector<int> sizes;
 
     //Weights between layers and layer biases

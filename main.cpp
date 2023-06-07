@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <fstream>
+#include <cassert>
 
 #include "Network.h"
 #include "FileData.h"
@@ -14,14 +15,17 @@ const int EPOCHS = 30;
 const int MINI_BATCH_SIZE = 10;
 const double LEARNING_RATE = 3.0;
 
-int main(int argc, char* argv[]) {
-	assert(argc == 2);
-	std::string input_file = argv[1];
+int main() {
+	std::string input_file;
+	printf("Enter A file to read from.\n");
+	std::cin >> input_file;
+	std::cin.ignore(100, '\n');
 
 	std::fstream inputs;
 
 	inputs.open("./inputs/" + input_file, std::ios::in);
-
+	
+	assert(inputs.is_open());
 	std::string line;
 
 	std::string training_data_file;
@@ -37,8 +41,9 @@ int main(int argc, char* argv[]) {
 
 	if (getline(inputs, line)) {
 		test_data_files = line;
-		assert(getline(inputs, line));
-		test_samples = stoi(line);
+		if (getline(inputs, line)) {
+			test_samples = stoi(line);
+		}
 	}
 
 	FileData data = FileData(training_data_file, training_samples, test_data_files, test_samples);

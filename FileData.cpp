@@ -6,7 +6,7 @@
 FileData::FileData(std::string training_data, int training_samples, std::string test_data, int test_samples) {
 	std::fstream training_data_file;
 	training_data_file.open("./data/" + training_data, std::ios::in);
-	assert(training_data_file.is_open());
+    assert(training_data_file.is_open());
     this->training_data = new Eigen::MatrixXd(training_samples, 785);
     printf("Reading Training Data\n");
     printf("|                    |\n");

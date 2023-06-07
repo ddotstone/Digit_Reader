@@ -1,31 +1,35 @@
-PROJECT(ml_text_reader)
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -pthread")
+PROJECT(ml_text_reader)
+
+set(CMAKE_CXX_STANDARD 14)
+
+set(CMAKE_SUPPRESS_REGENERATION true)
 
 SET(EXECUTABLE_OUTPUT_PATH ../bin/)
 
+
 # list of the source files
-set(dataRead_files ../FileData.cpp)
-set(train_network_files ../Network.cpp)
-set(main_function ../main.cpp)
+set(Digit_Reader_Files ../main.cpp ../Network.cpp ../FileData.cpp ../network_analysis.cpp ../Network.h ../FileData.h ../network_analysis.h)
+
+
 # define the executable
 if(WIN32)
-  add_executable(dataRead WIN32 ${dataRead_files})
-  add_executable(train_network WIN32 ${train_network_files})
-  add_executable(main WIN32 ${main_function})
+  add_executable(Digit_Reader WIN32 ${Digit_Reader_Files})
 
 else()
-  add_executable(dataRead ${dataRead_files})
-  add_executable(train_network ${train_network_files})
-  add_executable(main ${main_function})
+
+  add_executable(Digit_Reader ${Digit_Reader_Files})
+
 endif()
 # in Windows + Visual Studio we need this to make it a console application
 if(WIN32)
   if(MSVC)
-    set_target_properties(dataRead PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
-    set_target_properties(train_network PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
-    set_target_properties(main PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+ 
+    set_target_properties(Digit_Reader PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
   endif(MSVC)
 endif(WIN32)
+
+target_include_directories(Digit_Reader PUBLIC "./eigen")
+
 # install application
