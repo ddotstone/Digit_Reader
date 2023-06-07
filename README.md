@@ -7,3 +7,7 @@ quickly learn.
 
 The program then tests the results of the trained neural network against a test set of handwritten digits. The results of these tests
 are there printed to the console. The program is able to reach 95.6% accuracy, and with improvements will be able to hit much higher.
+
+**Creating Project**
+
+When cloning the repository it is important that you clone it recursively using "git clone --recursive" as the project depends on the Eigen package.
