@@ -12,6 +12,8 @@ SET(EXECUTABLE_OUTPUT_PATH ../bin/)
 # list of the source files
 set(Digit_Reader_Files ../main.cpp ../Network.cpp ../FileData.cpp ../network_analysis.cpp ../Network.h ../FileData.h ../network_analysis.h)
 
+set(include_files ../eigen)
+
 
 # define the executable
 if(WIN32)
@@ -30,6 +32,6 @@ if(WIN32)
   endif(MSVC)
 endif(WIN32)
 
-target_include_directories(Digit_Reader PUBLIC ../eigen)
+target_include_directories(Digit_Reader PUBLIC ${include_files})
 
 # install application
