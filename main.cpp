@@ -17,7 +17,7 @@ const double LEARNING_RATE = 3.0;
 
 int main() {
 	std::string input_file;
-	printf("Enter A file to read from.\n");
+	printf("Enter Inputs File:\n");
 	std::cin >> input_file;
 	std::cin.ignore(100, '\n');
 
