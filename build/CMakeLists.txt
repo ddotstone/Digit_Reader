@@ -10,7 +10,7 @@ SET(EXECUTABLE_OUTPUT_PATH ../bin/)
 
 
 # list of the source files
-set(Digit_Reader_Files ../main.cpp ../Network.cpp ../FileData.cpp ../network_analysis.cpp ../Network.h ../FileData.h ../network_analysis.h)
+set(Digit_Reader_Files ../src/main.cpp ../src/Network.cpp ../src/FileData.cpp ../src/network_analysis.cpp ../src/Network.h ../src/FileData.h ../src/network_analysis.h)
 
 set(include_files ../eigen)
 
