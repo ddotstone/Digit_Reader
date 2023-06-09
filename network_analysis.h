@@ -4,7 +4,7 @@
 #include<Eigen/Dense>
 
 namespace network_analysis {
-	Eigen::VectorXd sigmoid(Eigen::VectorXd neurons);
-	Eigen::VectorXd sigmoid_prime(Eigen::VectorXd neurons);
+	Eigen::MatrixXd sigmoid(Eigen::MatrixXd neurons);
+	Eigen::MatrixXd sigmoid_prime(Eigen::MatrixXd neurons);
 }
 
