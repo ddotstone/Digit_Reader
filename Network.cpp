@@ -26,6 +26,7 @@ Network::Network(std::vector<int> sizes) :sizes(sizes), num_layers(sizes.size())
 	}
 }
 
+
 Network::~Network() {
 	for (int i = 0; i < this->num_layers - 1; ++i)
 	{
@@ -56,9 +57,8 @@ void Network::SGD(Eigen::MatrixXd* training_data, int epochs, int mini_batch_siz
 		permX.setIdentity();
 		std::shuffle(permX.indices().data(), permX.indices().data() + permX.indices().size(),eng1);
 		(*training_data) = permX * (*training_data);
-		for (int i = 0; i < 10; i++) {
-		}
-		printf("Epoch %d\n",j);
+		
+		printf("Epoch %d\n",j + 1);
 		printf("|                    |\n");
 		printf(" ");
 		int k = 1;
@@ -75,10 +75,10 @@ void Network::SGD(Eigen::MatrixXd* training_data, int epochs, int mini_batch_siz
 		}
 		printf("\n\n");
 		if (test_data) {
-			printf("Epoch %d: %d / %d\n\n", j, evaluate(test_data), n_test);
+			printf("Epoch %d: %d / %d\n\n", j + 1, evaluate(test_data), n_test);
 		}
 		else{
-			printf("Epoch %d complete", j);
+			printf("Epoch %d complete", j + 1);
 		}
 	}
 	return;
@@ -94,60 +94,64 @@ void Network::update_mini_batch(const Eigen::MatrixXd* training_data,int start, 
 		nabla_b[i] = Eigen::MatrixXd::Zero(this->biases[i]->rows(), this->biases[i]->cols());
 		nabla_w[i] = Eigen::MatrixXd::Zero(this->weights[i]->rows(), this->weights[i]->cols());
 	}
-	for (int i = start; i <= end; ++i) {
-		int expectedResult = (int)(*training_data)(i,0);
-		Eigen::VectorXd x = Eigen::VectorXd::Zero(10);
-		x(expectedResult) = 1;
-		Eigen::VectorXd y = training_data->row(i).rightCols(784);
-		std::pair<std::vector<Eigen::MatrixXd>,std::vector<Eigen::MatrixXd>> delta_nablas = backdrop(x, y);
-		std::vector<Eigen::MatrixXd> delta_nabla_b = delta_nablas.first;
-		std::vector<Eigen::MatrixXd> delta_nabla_w = delta_nablas.second;
-		for (int set = 0; set < factorSize; ++set) {
-			nabla_b[set] = nabla_b[set] + delta_nabla_b[set];
-			nabla_w[set] = nabla_w[set] + delta_nabla_w[set];
+	Eigen::MatrixXd x = Eigen::MatrixXd::Zero(10, end - start + 1);
+	for (int i =start; i <= end; i++) {
+		int expectedResult = (int)(*training_data)(i, 0);
+		x(expectedResult, i - start) = 1;
+	}
+	Eigen::MatrixXd y = training_data->block(start,1,end - start + 1, 784);
+	y.adjointInPlace();
+
+	std::vector<Eigen::MatrixXd> delta_nabla_b(factorSize);
+	std::vector<std::vector<Eigen::MatrixXd>> delta_nabla_w(factorSize, std::vector<Eigen::MatrixXd> (end - start + 1));
+
+	backdrop(x, y,delta_nabla_w,delta_nabla_b);
+	
+	for (int set = 0; set < factorSize; ++set) {
+		for (int i = 0; i < end - start + 1; ++i) {
+			nabla_b[set] = nabla_b[set] + delta_nabla_b[set].col(i);
+			nabla_w[set] = nabla_w[set] + delta_nabla_w[set][i];
 		}
 	}
 	for (int set = 0; set < factorSize; ++set) {
-		(*this->biases[set]) = (*this->biases[set]) - (eta / (double)(end - start)) * nabla_b[set];
-		(*this->weights[set]) = (*this->weights[set]) - (eta / (double)(end - start)) * nabla_w[set];
+		(*this->biases[set]) = (*this->biases[set]) - (eta / (double)(end - start + 1)) * nabla_b[set];
+		(*this->weights[set]) = (*this->weights[set]) - (eta / (double)(end - start + 1)) * nabla_w[set];
 	}
 }
 
-std::pair<std::vector<Eigen::MatrixXd>, std::vector<Eigen::MatrixXd>> Network::backdrop(const Eigen::VectorXd& x, const Eigen::VectorXd& y)
+void Network::backdrop(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y,std::vector<std::vector<Eigen::MatrixXd>>& nabla_w,std::vector<Eigen::MatrixXd>& nabla_b)
 {
 	int factorSize = (int)this->weights.size();
-	std::vector<Eigen::MatrixXd> nabla_b(factorSize);
-	std::vector<Eigen::MatrixXd> nabla_w(factorSize);
+	int mini_batch_size = y.cols();
 
-	
+	Eigen::MatrixXd activation = y;
+	std::vector<Eigen::MatrixXd> activations = { activation };
+	std::vector<Eigen::MatrixXd> zs;
 	for (int i = 0; i < factorSize; ++i) {
-		nabla_b[i] = Eigen::MatrixXd::Zero(this->biases[i]->rows(), this->biases[i]->cols());
-		nabla_w[i] = Eigen::MatrixXd::Zero(this->weights[i]->rows(), this->weights[i]->cols());
-	}
-
-	Eigen::VectorXd activation = y;
-	std::vector<Eigen::VectorXd> activations = { activation };
-	std::vector<Eigen::VectorXd> zs;
-	
-	for (int i = 0; i < factorSize; ++i) {
-		Eigen::MatrixXd z = (*this->weights[i]) * activation + (*this->biases[i]);
+		Eigen::MatrixXd z = (*this->weights[i]) * activation;
+		for (int j = 0; j < mini_batch_size; ++j) {
+			z.col(j) += (*this->biases[i]);
+		}
 		zs.push_back(z);
 		activation = network_analysis::sigmoid(z);
 		activations.push_back(activation);
 	}
-	Eigen::ArrayXd lmul = cost_derivative(activations[activations.size() - 1], x);
-	Eigen::ArrayXd rmul = network_analysis::sigmoid_prime(zs[zs.size() - 1]); 
-	Eigen::VectorXd delta = lmul * rmul;
+	Eigen::ArrayXXd lmul = cost_derivative(activations[activations.size() - 1], x);
+	Eigen::ArrayXXd rmul = network_analysis::sigmoid_prime(zs[zs.size() - 1]); 
+	Eigen::MatrixXd delta = lmul * rmul;
 	nabla_b[nabla_b.size() - 1] = delta;
-	nabla_w[nabla_w.size() - 1] = delta*activations[activations.size() - 2].adjoint();
+	for (int i = 0; i < mini_batch_size; ++i) {
+		nabla_w[nabla_w.size() - 1][i] = delta.col(i) * activations[activations.size() - 2].col(i).adjoint();
+	}
 	for (int l = (int)nabla_b.size() - 2; l >= 0; --l) {
 		Eigen::MatrixXd z = zs[l];
-		Eigen::ArrayXd sp = network_analysis::sigmoid_prime(z);
+		Eigen::ArrayXXd sp = network_analysis::sigmoid_prime(z);
 		delta = ((*this->weights[l + 1]).adjoint() * delta).array() * sp;
 		nabla_b[l] = delta;
-		nabla_w[l] = delta * activations[l].adjoint();
+		for (int i = 0; i < delta.cols(); ++i) {
+			nabla_w[l][i] = delta.col(i) * activations[l].col(i).adjoint();
+		}
 	}
-	return { nabla_b,nabla_w };
 }
 
 int Network::evaluate(const Eigen::MatrixXd * test_data)
@@ -177,7 +181,7 @@ int Network::evaluate(const Eigen::MatrixXd * test_data)
 	return correct_results;
 }
 
-Eigen::VectorXd Network::cost_derivative(const Eigen::VectorXd& output_activations, const Eigen::VectorXd& x)
+Eigen::MatrixXd Network::cost_derivative(const Eigen::MatrixXd& output_activations, const Eigen::MatrixXd& x)
 {	
 	return output_activations - x;
 }

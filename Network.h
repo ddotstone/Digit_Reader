@@ -27,9 +27,9 @@ public:
     //Training model
     void SGD(Eigen::MatrixXd* training_data, int epochs, int mini_batch_size, double eta, const Eigen::MatrixXd* test_data);
     void update_mini_batch(const Eigen::MatrixXd* training_data, int start, int end, double eta);
-    std::pair<std::vector<Eigen::MatrixXd>,std::vector<Eigen::MatrixXd>> backdrop(const Eigen::VectorXd& x, const Eigen::VectorXd& y);
+    void backdrop(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, std::vector<std::vector<Eigen::MatrixXd>>& delta_nabla_w,std::vector<Eigen::MatrixXd>& delta_nabla_b);
     int evaluate(const Eigen::MatrixXd* test_data);
-    Eigen::VectorXd cost_derivative(const Eigen::VectorXd& output_activations, const Eigen::VectorXd& x);
+    Eigen::MatrixXd cost_derivative(const Eigen::MatrixXd& output_activations, const Eigen::MatrixXd& x);
 };
 
 #endif
