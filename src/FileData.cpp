@@ -4,8 +4,8 @@
 #include <cassert>
 
 FileData::FileData(std::string training_data, int training_samples, std::string test_data, int test_samples) {
-	std::fstream training_data_file;
-	training_data_file.open("./data/" + training_data, std::ios::in);
+    std::fstream training_data_file;
+    training_data_file.open("./data/" + training_data, std::ios::in);
     assert(training_data_file.is_open());
     this->training_data = new Eigen::MatrixXd(training_samples, 785);
     printf("Reading Training Data\n");
@@ -20,17 +20,13 @@ FileData::FileData(std::string training_data, int training_samples, std::string 
 
         std::stringstream s;
         s << line;
-
-        for (int i = 0;i < 785;i++) {
+        std::string value;
+        std::getline(s, value, ',');
+        (*this->training_data)(row, 0) = stoi(value);
+        for (int i = 1;i < 785;i++) {
             std::string word;
             std::getline(s, word, ',');
-            if (i == 0) {
-                (*this->training_data)(row,i) = stoi(word) / 1.0;
-            }
-            else {
-                (*this->training_data)(row,i) = stoi(word) / 255.0;
-
-            }
+            (*this->training_data)(row, i) = stoi(word) / 255.0;
         }
     }
     printf("\n");
@@ -47,10 +43,10 @@ FileData::FileData(std::string training_data, int training_samples, std::string 
     printf(" ");
 
     assert(test_samples != -1);
-	std::fstream test_data_file;
-	test_data_file.open("./data/" + test_data, std::ios::in);
-	
-	assert(test_data_file.is_open());
+    std::fstream test_data_file;
+    test_data_file.open("./data/" + test_data, std::ios::in);
+
+    assert(test_data_file.is_open());
     this->test_data = new Eigen::MatrixXd(test_samples, 785);
     for (int row = 0; row < test_samples; ++row) {
 
@@ -58,23 +54,20 @@ FileData::FileData(std::string training_data, int training_samples, std::string 
             printf("=");
         }
 
-
         std::string line;
         std::getline(test_data_file, line);
 
         std::stringstream s;
         s << line;
 
-        for (int i = 0;i < 785;i++) {
+        std::string value;
+        std::getline(s, value, ',');
+        (*this->test_data)(row, 0) = stoi(value);
+
+        for (int i = 1;i < 785;i++) {
             std::string word;
             std::getline(s, word, ',');
-            if (i == 0) {
-                (*this->test_data)(row,i) = stoi(word) / 1.0;
-            }
-            else {
-                (*this->test_data)(row,i) = stoi(word) / 255.0;
-
-            }
+            (*this->test_data)(row, i) = stoi(word) / 255.0;
         }
     }
 
