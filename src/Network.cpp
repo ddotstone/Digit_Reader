@@ -3,6 +3,7 @@
 #include <ctime>
 #include <random>
 #include <algorithm>
+#include <fstream>
 
 Network::Network(std::vector<int> sizes) :sizes(sizes), num_layers(sizes.size())
 {
@@ -186,5 +187,32 @@ Eigen::MatrixXd Network::cost_derivative(const Eigen::MatrixXd& output_activatio
 	return output_activations - x;
 }
 
+void Network::printResults() {
+	std::ofstream resultFile("Results/results.csv");
+	if (!resultFile.is_open()) {
+		throw ("RESULTS.TXT_COULD_NOT_OPEN");
+	}
+	resultFile << "Weights,\n\n";
+	for (int i = 0; i < this->weights.size(); ++i) {
+		resultFile << "Layer " << i + 1 << " : " << i + 2 << "\n\n";
+		for (int row = 0; row < this->weights[i]->rows();++row) {
+			for (int col = 0; col < this->weights[i]->cols();++col) {
+				resultFile << (*this->weights[i])(row, col) << ",";
+			}
+			resultFile << "\n";
+		}
+		resultFile << "\n";
+	}
+	resultFile << "Biases\n\n";
+	for (int i = 0; i < this->biases.size(); ++i) {
+		resultFile << "Layer " << i + 1 << " : " << i + 2 << "\n\n";
+		for (int row = 0; row < this->biases[i]->rows();++row) {
+			resultFile << (*this->biases[i])(row) << ",";
+		}
+		resultFile << "\n\n";
+	}
 
+	resultFile.close();
+	return;
+}
 

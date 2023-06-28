@@ -16,16 +16,19 @@ const int MINI_BATCH_SIZE = 10;
 const double LEARNING_RATE = 3.0;
 
 int main() {
-	std::string input_file;
-	printf("Enter Inputs File:\n");
-	std::cin >> input_file;
-	std::cin.ignore(100, '\n');
 
-	std::fstream inputs;
+		std::string input_file;
+		std::fstream inputs;
 
-	inputs.open("./inputs/" + input_file, std::ios::in);
-	
-	assert(inputs.is_open());
+	do {
+
+		printf("Enter Inputs File:\n");
+		std::cin >> input_file;
+		std::cin.ignore(100, '\n');
+		inputs.open("./inputs/" + input_file, std::ios::in);
+
+	} while (!inputs.is_open());
+
 	std::string line;
 
 	std::string training_data_file;
@@ -45,11 +48,11 @@ int main() {
 			test_samples = stoi(line);
 		}
 	}
-
+	inputs.close();
 	FileData data = FileData(training_data_file, training_samples, test_data_files, test_samples);
 
 	Network network({PIXELS,HIDDEN_LAYERS,OUTPUTS});
 
 	network.SGD(data.getTraining_Data(), EPOCHS, MINI_BATCH_SIZE, LEARNING_RATE, data.getTest_Data());
-
+	network.printResults();
 }

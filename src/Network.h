@@ -30,6 +30,7 @@ public:
     void backdrop(const Eigen::MatrixXd& x, const Eigen::MatrixXd& y, std::vector<std::vector<Eigen::MatrixXd>>& delta_nabla_w,std::vector<Eigen::MatrixXd>& delta_nabla_b);
     int evaluate(const Eigen::MatrixXd* test_data);
     Eigen::MatrixXd cost_derivative(const Eigen::MatrixXd& output_activations, const Eigen::MatrixXd& x);
+    void printResults();
 };
 
 #endif
