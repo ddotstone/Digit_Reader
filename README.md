@@ -19,3 +19,6 @@ In order to build the project, cmake is required. Navigate to the folder conatai
 **Running Project**
 
 The first thing the program will ask is what inputs to use. Theses can be found in the inputs folder. Enter the filename of the inputs you would like to use from the inputs folder and the program will begin to run.
+
+**Results**
+After the file has ran through the number of epochs requested, the results are saved in the file results.csv, in the Results directory. These result allow you to use the effectiveness reached in a less labor intensive way.
